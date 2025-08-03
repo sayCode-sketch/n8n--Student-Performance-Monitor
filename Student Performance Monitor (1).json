@@ -1,0 +1,557 @@
+{
+  "name": "Student Performance Monitor",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8bba2d2d-747a-4cd1-8ef3-42a07bebb488",
+              "leftValue": "={{ $json['Attendance Score'] }}",
+              "rightValue": 65,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "514610cd-e8d5-488e-b049-4fcfd81b9afd",
+              "leftValue": "={{ $json['Assignment Score'] }}",
+              "rightValue": 70,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -224,
+        32
+      ],
+      "id": "01f609aa-d854-4aca-bd9e-2a088828505d",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        224,
+        -64
+      ],
+      "id": "5fcc817d-8c71-4793-8b2a-a228fc06759b",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json[\"Email\"] }}",
+        "subject": "Student performance ",
+        "message": "=<!DOCTYPE html>\n<html>\n  <body style=\"font-family: 'Segoe UI', Arial, sans-serif; background-color: #eef2f7; padding: 20px;\">\n    <div style=\"max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);\">\n      \n      <div style=\"text-align: center;\">\n        <h2 style=\"color: #2b7a78; margin-bottom: 5px;\">Student Performance Snapshot 📋</h2>\n        <p style=\"color: #555; font-size: 14px;\">Term Performance Overview</p>\n      </div>\n\n      <div style=\"margin-top: 20px; padding: 15px; border-radius: 10px; background-color: #f9f9f9;\">\n        <p style=\"margin: 0; font-size: 16px; color: #333;\">\n          Dear <strong>{{ $json[\"Name\"] }}</strong>,\n        </p>\n        <p style=\"margin-top: 5px; font-size: 14px; color: #666;\">\n          Here's your performance summary for this term:\n        </p>\n      </div>\n\n      <!-- Performance Cards -->\n      <div style=\"display: flex; gap: 15px; margin-top: 20px;\">\n        <div style=\"flex: 1; background-color: #d4edda; padding: 15px; border-radius: 8px; text-align: center;\">\n          <h3 style=\"margin: 0; font-size: 18px; color: #155724;\">Attendance</h3>\n          <p style=\"margin: 5px 0 0; font-size: 20px; font-weight: bold; color: #155724;\">\n            {{ $json[\"Attendance Score\"] }}\n          </p>\n        </div>\n        <div style=\"flex: 1; background-color: #cce5ff; padding: 15px; border-radius: 8px; text-align: center;\">\n          <h3 style=\"margin: 0; font-size: 18px; color: #004085;\">Assignment</h3>\n          <p style=\"margin: 5px 0 0; font-size: 20px; font-weight: bold; color: #004085;\">\n            {{ $json[\"Assignment Score\"] }}\n          </p>\n        </div>\n      </div>\n\n      <!-- Closing Note -->\n      <div style=\"margin-top: 25px; background-color: #fff3cd; padding: 15px; border-radius: 8px; font-size: 14px; color: #856404;\">\n        🌟 Keep up the great work! Every step you take brings you closer to your goals.\n      </div>\n\n      <p style=\"margin-top: 20px; font-size: 14px; color: #444;\">\n        Best regards,<br><strong>Your Teacher</strong>\n      </p>\n    </div>\n  </body>\n</html>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        448,
+        -64
+      ],
+      "id": "499d95b5-15ef-4ed9-99f2-8f27bf560fce",
+      "name": "Send a message",
+      "webhookId": "760c777f-dbc8-4d68-810d-4fa3ab855676",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "S2VGprgvDkuc9DLN",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        224,
+        128
+      ],
+      "id": "522334af-9d83-4476-b9ac-7e39a69eacb0",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Student performance ",
+        "message": "=<!DOCTYPE html>\n<html>\n  <body style=\"font-family: 'Segoe UI', Arial, sans-serif; background-color: #fff5f5; padding: 20px;\">\n    <div style=\"max-width: 600px; margin: auto; background: #ffffff; padding: 25px; border-radius: 10px; border-left: 6px solid #e53935; box-shadow: 0 4px 12px rgba(0,0,0,0.05);\">\n      \n      <!-- Header -->\n      <div style=\"text-align: center; margin-bottom: 15px;\">\n        <h2 style=\"color: #e53935; margin: 0;\">⚠️ Performance Alert</h2>\n        <p style=\"color: #b71c1c; font-size: 14px; margin: 5px 0 0;\">Immediate Attention Recommended</p>\n      </div>\n\n      <!-- Greeting -->\n      <p style=\"font-size: 15px; color: #444;\">\n        Dear <strong>{{ $json[\"Name\"] }}</strong>,\n      </p>\n\n      <p style=\"font-size: 14px; color: #555;\">\n        We have reviewed your recent performance, and we would like to bring the following points to your attention:\n      </p>\n\n      <!-- Performance Boxes -->\n      <div style=\"display: flex; gap: 15px; margin-top: 20px;\">\n        <div style=\"flex: 1; background-color: #ffebee; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #ffcdd2;\">\n          <h3 style=\"margin: 0; font-size: 16px; color: #c62828;\">Attendance</h3>\n          <p style=\"margin: 5px 0 0; font-size: 20px; font-weight: bold; color: #b71c1c;\">\n            {{ $json[\"Attendance Score\"] }}\n          </p>\n        </div>\n        <div style=\"flex: 1; background-color: #ffebee; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #ffcdd2;\">\n          <h3 style=\"margin: 0; font-size: 16px; color: #c62828;\">Assignment</h3>\n          <p style=\"margin: 5px 0 0; font-size: 20px; font-weight: bold; color: #b71c1c;\">\n            {{ $json[\"Assignment Score\"] }}\n          </p>\n        </div>\n      </div>\n\n      <!-- Action Message -->\n      <div style=\"margin-top: 25px; background-color: #fff3cd; padding: 15px; border-radius: 8px; font-size: 14px; color: #856404; border: 1px solid #ffeeba;\">\n        📌 Please meet with your subject teacher to discuss ways to improve your performance.\n      </div>\n\n      <p style=\"margin-top: 20px; font-size: 14px; color: #555;\">\n        If you are facing challenges, do not hesitate to reach out. We are here to support you.\n      </p>\n\n      <p style=\"margin-top: 15px; font-size: 14px; color: #444;\">\n        Sincerely,<br><strong>Your Teacher</strong>\n      </p>\n    </div>\n  </body>\n</html>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        448,
+        128
+      ],
+      "id": "4593bfcb-4f86-481b-8882-be0f80b591f0",
+      "name": "Send a message1",
+      "webhookId": "760c777f-dbc8-4d68-810d-4fa3ab855676",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "S2VGprgvDkuc9DLN",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1Auq8FY3bd4cgH45TEH5vKPW369YJqR3v9ppJcF1KbRo",
+          "mode": "list",
+          "cachedResultName": "Student performance checker1(Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Auq8FY3bd4cgH45TEH5vKPW369YJqR3v9ppJcF1KbRo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1699527889,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Auq8FY3bd4cgH45TEH5vKPW369YJqR3v9ppJcF1KbRo/edit#gid=1699527889"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        32
+      ],
+      "id": "830fe4e8-691c-4a11-ba28-85c5d2759440",
+      "name": "Fetching the data",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "aqteRK1jBTKjQEs0",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "14I7XRCX1XilnmFc1tOEflr_LPeScgVkxM7P80eLszAg",
+          "mode": "list",
+          "cachedResultName": "Student performance check1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14I7XRCX1XilnmFc1tOEflr_LPeScgVkxM7P80eLszAg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1298108966,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14I7XRCX1XilnmFc1tOEflr_LPeScgVkxM7P80eLszAg/edit#gid=1298108966"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "Email": "={{ $json.Email }}",
+            "Timestamp": "={{ $json.Timestamp }}",
+            "Name": "={{ $json.Name }}",
+            "Student ID": "={{ $json['Student ID'] }}",
+            "Attendance score": "={{ $json['Attendance Score'] }}",
+            "Assignment Score ": "={{ $json['Assignment Score'] }}"
+          },
+          "matchingColumns": [
+            "Timestamp"
+          ],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Student ID",
+              "displayName": "Student ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Attendance score",
+              "displayName": "Attendance score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Assignment Score ",
+              "displayName": "Assignment Score ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Attendance Score",
+              "displayName": "Attendance Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Assignment Score",
+              "displayName": "Assignment Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        0,
+        -64
+      ],
+      "id": "908ae9af-c634-4425-abe2-585f155075fa",
+      "name": "Update data ",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Pk4pMD4koBbatCD0",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "14I7XRCX1XilnmFc1tOEflr_LPeScgVkxM7P80eLszAg",
+          "mode": "list",
+          "cachedResultName": "Student performance check1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14I7XRCX1XilnmFc1tOEflr_LPeScgVkxM7P80eLszAg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1298108966,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14I7XRCX1XilnmFc1tOEflr_LPeScgVkxM7P80eLszAg/edit#gid=1298108966"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "Email": "={{ $json.Email }}",
+            "Timestamp": "={{ $json.Timestamp }}",
+            "Name": "={{ $json.Name }}",
+            "Student ID": "={{ $json['Student ID'] }}",
+            "Attendance score": "={{ $json['Attendance Score'] }}",
+            "Assignment Score ": "={{ $json['Assignment Score'] }}"
+          },
+          "matchingColumns": [
+            "Timestamp"
+          ],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Student ID",
+              "displayName": "Student ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Attendance score",
+              "displayName": "Attendance score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Assignment Score ",
+              "displayName": "Assignment Score ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Attendance Score",
+              "displayName": "Attendance Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Assignment Score",
+              "displayName": "Assignment Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        0,
+        128
+      ],
+      "id": "38da0089-ce6f-43a0-97b8-3d2f189901cb",
+      "name": "Update data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Pk4pMD4koBbatCD0",
+          "name": "Google Sheets account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Update data ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetching the data": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update data ": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update data": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4cdda790-cf3a-4ed6-a0f3-12f7bed1457d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "454daa474b809eed470ba0907ac0fc8617d07ed653722469ddc3d0d50cc0d421"
+  },
+  "id": "OgF6z6u3k2rAPNO6",
+  "tags": []
+}
